@@ -2,6 +2,14 @@
 all:
 	@echo "Not yet implemented!"
 
+fpu-test:
+	@echo "************************************************************"
+	@echo Executing fpu-test...
+	@iverilog -Iinclude fpu/*.v ../src/fpu/*.v -o $(BINDIR)/fpu-test
+	@$(BINDIR)/fpu-test
+	@echo Finished fpu-test.
+	@echo "************************************************************"
+
 alu-test:
 	@echo "************************************************************"
 	@echo Executing alu-test...
