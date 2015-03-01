@@ -1,5 +1,5 @@
 
-module fpu_test;
+module FpuTest;
 
 	`include "Framework.v"
 
