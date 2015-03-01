@@ -13,7 +13,6 @@
  * - Smaller than	=>		0x9
  */
 
-`timescale 1ns / 1ps
 module ArithmeticLogicUnit
 	#(parameter BUS_WIDTH = 8)
 	(input wire [BUS_WIDTH-1:0] a,
