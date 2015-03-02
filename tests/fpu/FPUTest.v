@@ -25,10 +25,17 @@ module FpuTest;
 		#10 display_test_bin(32'b01000000010010001111010111000011, result);
 
 		b = a;
-		#40 display_test_bin(32'b01000000110010001111010111000011, result);
+		#10 display_test_bin(32'b01000000110010001111010111000011, result);
 
 		b = result;
-		#40 display_test_bin(32'b01000001000101101011100001010010, result);
+		#10 display_test_bin(32'b01000001000101101011100001010010, result);
+
+		b = a;
+		b[31] = 1;
+
+		$display("Negative number: %b", b);
+		
+		#10 display_test_bin(32'b01000000110010001111010111000011, result);
 
 		#100 $finish;
 	end

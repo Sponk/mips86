@@ -18,7 +18,13 @@ alu-test:
 fpu-test: 
 	@$(MAKE) -s -C tests fpu-test
 
+emu-test:
+	@$(MAKE) -s -C tests emu-test
 
-test: alu-test fpu-test
+extend-test: 
+	@$(MAKE) -s -C tests extend-test
+
+
+test: alu-test fpu-test extend-test
 
 .PHONY: clean tools

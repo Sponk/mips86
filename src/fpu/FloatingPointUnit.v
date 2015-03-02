@@ -33,9 +33,10 @@ module FloatingPointUnit
 
 		mantissaA[22:0] = a[22:0];
 		mantissaA[23] = 1;
-
+		
 		mantissaB[22:0] = b[22:0];
 		mantissaB[23] = 1;
+
 
 		shift_count = a[30:23] - b[30:23];
 

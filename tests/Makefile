@@ -17,5 +17,18 @@ alu-test:
 	@$(BINDIR)/alu-test
 	@echo Finished alu-test.
 	@echo "************************************************************"
+
+extend-test:
+	@echo "************************************************************"
+	@echo Executing extend-test...
+	@iverilog -Iinclude extender/*.v ../src/extender/*.v -o $(BINDIR)/extend-test
+	@$(BINDIR)/extend-test
+	@echo Finished extend-test.
+	@echo "************************************************************"
+
+
+emu-test:
+	$(MAKE) -C os test
+
 clean:
 	@echo "Not yet implemented!"
