@@ -34,6 +34,12 @@ struct j_instruction
 
 }__attribute__((packed));
 
+uint32_t swap_uint32(uint32_t val)
+{
+	val = ((val << 8) & 0xFF00FF00 ) | ((val >> 8) & 0xFF00FF); 
+	return val; //(val << 16) | (val >> 16);
+}
+
 int main(int argc, char* argv[])
 {
 	if(argc <= 1)
@@ -51,13 +57,23 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	struct instruction opcode;
+	uint32_t opcode;
 	while(fread(&opcode, sizeof(opcode), 1, f) != 0)
 	{
-		struct instruction inst = (struct instruction) opcode;	
+		uint32_t op = opcode & (1 << 6) - 1;
 		
-		printf("Got opcode: 0x%x (%b)\n", inst.op, inst.op);
-	}	
+		if(op == 0)
+		{
+			uint32_t rs = opcode & ((1 << 5) - 1) << 6;
+			uint32_t rt = opcode & ((1 << 5) - 1) << 11;
+			uint32_t rd = opcode & ((1 << 5) - 1) << 16;
+			uint32_t shamt = opcode & ((1 << 5) - 1) << 21;
+			uint32_t func = opcode & ((1 << 6) -1 ) << 26;
+
+			printf("Got opcode: op = 0x%x rs = 0x%x rt = 0x%x rd = 0x%x\n", op,  rs, rt, rd);
+		}	
+	
+	}
 
 	fclose(f);
 	return 0;

@@ -20,7 +20,8 @@ module SignExtender #(parameter INPUT_WIDTH = 16, parameter OUTPUT_WIDTH = 32)
 	assign out[INPUT_WIDTH-1:0] = in;
 
 	genvar i;
-	for(i = INPUT_WIDTH; i < OUTPUT_WIDTH; i = i + 1)
-		assign out[i] = (signExtend) ? in[INPUT_WIDTH-1] : 0;
-
+	generate
+		for(i = INPUT_WIDTH; i < OUTPUT_WIDTH; i = i + 1)
+			assign out[i] = (signExtend) ? in[INPUT_WIDTH-1] : 0;
+	endgenerate
 endmodule

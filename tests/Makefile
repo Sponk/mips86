@@ -27,6 +27,15 @@ extend-test:
 	@echo "************************************************************"
 
 
+utils-test:
+	@echo "************************************************************"
+	@echo Executing utils-test...
+	@iverilog -Iinclude utils/*.v ../src/utils/*.v -o $(BINDIR)/utils-test
+	@$(BINDIR)/utils-test
+	@echo Finished utils-test.
+	@echo "************************************************************"
+
+
 emu-test:
 	$(MAKE) -C os test
 

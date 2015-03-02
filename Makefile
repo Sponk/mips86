@@ -24,7 +24,10 @@ emu-test:
 extend-test: 
 	@$(MAKE) -s -C tests extend-test
 
+utils-test: 
+	@$(MAKE) -s -C tests utils-test
 
-test: alu-test fpu-test extend-test
+
+test: alu-test fpu-test extend-test utils-test
 
 .PHONY: clean tools
