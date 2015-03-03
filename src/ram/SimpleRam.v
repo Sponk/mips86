@@ -1,15 +1,15 @@
 
 module SimpleRam
-	#(parameter BUS_WIDTH = 8, parameter SIZE = 512)
+	#(parameter BUS_WIDTH = 8, parameter SIZE = 512, parameter ADDRESS_WIDTH = 32)
 	(
 		input wire clk,
 		input wire reset,
 
-		input wire [BUS_WIDTH-1:0] addrA,
+		input wire [ADDRESS_WIDTH-1:0] addrA,
 		input wire [BUS_WIDTH-1:0] dataIn,
 		input wire writeEnable,
 
-		input wire [BUS_WIDTH-1:0] addrB,
+		input wire [ADDRESS_WIDTH-1:0] addrB,
 
 		output reg [BUS_WIDTH-1:0] outA,
 		output reg [BUS_WIDTH-1:0] outB,
@@ -26,14 +26,18 @@ module SimpleRam
 	always @(addrB)
 		busyB <= 1;
 
-	always @(posedge clk or negedge clk)
+	always @(negedge clk)
 	begin
 		if(writeEnable)
 		begin
 			outA <= dataIn;
 			memory[addrA] <= dataIn;
 		end
-		else
+	end
+
+	always @(posedge clk or negedge clk)
+	begin
+		if(~writeEnable)
 		begin
 			busyA <= 0;
 			outA <= memory[addrA];

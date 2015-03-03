@@ -52,6 +52,15 @@ rom-test:
 	@echo Finished rom-test.
 	@echo "************************************************************"
 
+mmu-test:
+	$(MAKE) -C os
+	@echo "************************************************************"
+	@echo Executing mmu-test...
+	@iverilog -Iinclude mmu/*.v ../src/mmu/*.v ../src/rom/*.v ../src/ram/*.v -o $(BINDIR)/mmu-test
+	@cd $(BINDIR) && ./mmu-test
+	@echo Finished mmu-test.
+	@echo "************************************************************"
+
 
 
 emu-test:

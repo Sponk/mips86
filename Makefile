@@ -33,7 +33,9 @@ ram-test:
 rom-test: 
 	@$(MAKE) -s -C tests rom-test
 
+mmu-test: 
+	@$(MAKE) -s -C tests mmu-test
 
-test: alu-test fpu-test extend-test utils-test ram-test rom-test
+test: alu-test fpu-test extend-test utils-test ram-test rom-test mmu-test
 
 .PHONY: clean tools
