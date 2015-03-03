@@ -56,12 +56,12 @@ int main(int argc, char *argv[])
 			break;
 		}
 
-		printf("%02X", byte);
+		printf("%02X\n", byte);
 
 		/* add newline every byte_nl bytes */
-		if (0 == n % byte_nl) {
-			printf("\n");
-		}
+	//	if (0 == n % byte_nl) {
+	//		printf("\n");
+	//	}
 
 		n++;
 	}

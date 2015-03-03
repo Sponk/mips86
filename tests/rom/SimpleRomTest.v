@@ -7,21 +7,30 @@ module SimpleRomTest;
 	reg clk;
 
 	wire [7:0] dataOut;
-	reg [31:0] address;
+	wire [7:0] dataOutA;
 
-	SimpleRom rom(clk, address, dataOut);
+	reg [31:0] address;
+	reg [31:0] addressA;
+
+	SimpleRom rom(clk, address, addressA, dataOut, dataOutA);
 
 	always #10 clk = ~clk;
 
+	integer i;
 	initial begin
 		clk = 0;
 		reset = 1;
 
 		#20 reset = 0;
 
-		address = 0;
-		
-		#10 test_nequal_hex(8'b0, dataOut);
+		$display("ROM-Dump:");
+		for(i = 0; i < 15; i = i + 1)
+		begin
+			addressA = i;
+			address = i;
+
+			#20 $display("Address: 0x%h == 0x%h", i, dataOut);
+		end
 
 		$finish;
 	end
