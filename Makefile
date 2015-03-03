@@ -27,7 +27,13 @@ extend-test:
 utils-test: 
 	@$(MAKE) -s -C tests utils-test
 
+ram-test: 
+	@$(MAKE) -s -C tests ram-test
 
-test: alu-test fpu-test extend-test utils-test
+rom-test: 
+	@$(MAKE) -s -C tests rom-test
+
+
+test: alu-test fpu-test extend-test utils-test ram-test rom-test
 
 .PHONY: clean tools

@@ -10,6 +10,7 @@ OBJS=$(addsuffix .o,$(basename $(SRCS)))
 all: $(OBJS)
 	mips64-linux-gnu-ld $(OBJS) -T link.ld -o kernel.elf	
 	mips64-linux-gnu-objcopy --only-section=.text -O binary kernel.elf kernel.bin
+	$(BINDIR)/bin2hex $(BINDIR)/kernel.bin > $(BINDIR)/kernel.hex
 
 test: all
 	@cp kernel.bin $(BINDIR)
