@@ -4,7 +4,8 @@ module SimpleMmu
 		parameter ROM_SIZE = 256,
 		parameter RAM_SIZE = 512,
 		parameter BUS_WIDTH = 8, 
-		parameter ADDRESS_WIDTH = 32
+		parameter ADDRESS_WIDTH = 32,
+		parameter ROM_DELAY = 1 
 	)
 	(
 		input wire clk,
@@ -53,13 +54,13 @@ module SimpleMmu
 
 	SimpleRom rom(clk, physAddrA, physAddrB, romOutA, romOutB);
 
-	reg romCounter = 0;
+	reg [7:0] romCounter = 0;
 	reg srcA = 0;
 	reg srcB = 0;
 
 	always @(negedge writeEnable) ramWriteEnable = 0;
 
-	always @(posedge clk)
+	always @(posedge clk or negedge clk)
 	begin
 		if(requestA & ~regBusyA)
 		begin
@@ -113,12 +114,12 @@ module SimpleMmu
 			regBusyB = 0;
 			outB = ramOutB;
 		end
-		else if(~srcB & regBusyB & romCounter)
+		else if(~srcB & regBusyB && romCounter >= ROM_DELAY)
 		begin
 			regBusyB = 0;
 			outB = romOutB;
 		end
 
-		romCounter = ~romCounter;
+		romCounter = romCounter + 1;
 	end
 endmodule

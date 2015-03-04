@@ -15,7 +15,7 @@ module OpcodeBufferTest;
 	reg [7:0] dataIn;
 
 	reg requestA;
-	reg requestB;
+	wire requestB;
 
 	wire [7:0] outA;
 	wire [7:0] outB;
@@ -42,7 +42,8 @@ module OpcodeBufferTest;
 	wire busy;
 	wire [31:0] opcode;
 	reg startLoading;
-	OpcodeBuffer ob(clk, reset, ip, startLoading, outB, busyB, busy, opcode, addrB);
+	
+	OpcodeBuffer ob(clk, reset, ip, startLoading, outB, busyB, busy, opcode, addrB, requestB);
 
 	initial begin
 		

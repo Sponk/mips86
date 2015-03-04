@@ -40,9 +40,12 @@ opcode-buffer-test:
 	@$(MAKE) -s -C tests opcode-buffer-test
 
 
-test: emu-test tools alu-test fpu-test extend-test utils-test ram-test rom-test mmu-test opcode-buffer-test
+test: all emu-test alu-test fpu-test extend-test utils-test ram-test rom-test mmu-test opcode-buffer-test
 
 statistics:
 	@cloc .
+
+lint:
+	@verilator --lint-only src/ram/*.v src/rom/*.v src/alu/*.v src/mmu/*.v src/extender/*.v src/utils/*.v src/fpu/*.v src/opcode-buffer/*.v
 
 .PHONY: clean 
