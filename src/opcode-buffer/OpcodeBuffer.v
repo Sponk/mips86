@@ -58,9 +58,10 @@ module OpcodeBuffer
 		begin
 			counter = 0;
 			busy = 0;
-			opcode[WORD_WIDTH-1:WORD_WIDTH-9] <= operation[0];
-			opcode[WORD_WIDTH-10:WORD_WIDTH-18] <= operation[1];
-			opcode[WORD_WIDTH-19:0] <= operation[2];
+			opcode[31:24] <= operation[0];
+			opcode[23:16] <= operation[1];
+			opcode[15:8] <= operation[2];
+			opcode[7:0] <= operation[3];
 
 		end
 	
