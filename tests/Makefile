@@ -61,6 +61,15 @@ mmu-test:
 	@echo Finished mmu-test.
 	@echo "************************************************************"
 
+opcode-buffer-test:
+	$(MAKE) -C os
+	@echo "************************************************************"
+	@echo Executing opcode-buffer-test...
+	@iverilog -Iinclude opcode-buffer/*.v ../src/opcode-buffer/*.v ../src/mmu/*.v ../src/rom/*.v ../src/ram/*.v -o $(BINDIR)/opcode-buffer-test
+	@cd $(BINDIR) && ./opcode-buffer-test
+	@echo Finished opcode-buffer-test.
+	@echo "************************************************************"
+
 
 
 emu-test:
