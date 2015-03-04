@@ -5,7 +5,8 @@ module SimpleMmu
 		parameter RAM_SIZE = 512,
 		parameter BUS_WIDTH = 8, 
 		parameter ADDRESS_WIDTH = 32,
-		parameter ROM_DELAY = 1 
+		parameter ROM_DELAY = 2,
+ 		parameter RAM_DELAY = 1 
 	)
 	(
 		input wire clk,
@@ -47,7 +48,7 @@ module SimpleMmu
 	wire ramBusyA;
 	wire ramBusyB;
 
-	reg ramWriteEnable = 0;
+	wire ramWriteEnable;
 
 	SimpleRam ram(clk, reset, physAddrA, dataIn, ramWriteEnable, physAddrB, ramOutA,
 				ramOutB, ramBusyA, ramBusyB);
@@ -58,13 +59,12 @@ module SimpleMmu
 	reg srcA = 0;
 	reg srcB = 0;
 
-	always @(negedge writeEnable) ramWriteEnable = 0;
+	assign ramWriteEnable = writeEnable & srcA;
 
-	always @(posedge clk or negedge clk)
+	always @(clk)
 	begin
 		if(requestA & ~regBusyA)
 		begin
-
 			if(addrA < ROM_SIZE)
 			begin
 				srcA = 0;
@@ -74,8 +74,8 @@ module SimpleMmu
 			end
 			else
 			begin
+				romCounter = 0;
 				srcA = 1;
-				ramWriteEnable = writeEnable;
 				regBusyA = 1;
 				physAddrA = addrA - ROM_SIZE;
 			end
@@ -92,24 +92,25 @@ module SimpleMmu
 			end
 			else
 			begin
+				romCounter = 0;
 				srcB = 1;
 				regBusyB = 1;
 				physAddrB = addrB - ROM_SIZE;
 			end
 		end
 
-		if(srcA & regBusyA & ~ramBusyA)
+		if(srcA & regBusyA & romCounter >= RAM_DELAY)
 		begin
 			regBusyA = 0;
 			outA = ramOutA;
 		end
-		else if(~srcA & regBusyA & romCounter)
+		else if(~srcA & regBusyA & romCounter >= ROM_DELAY)
 		begin
 			regBusyA = 0;
 			outA = romOutA;
 		end
 
-		if(srcB & regBusyB & ~ramBusyB)
+		if(srcB & regBusyB & romCounter >= RAM_DELAY)
 		begin
 			regBusyB = 0;
 			outB = ramOutB;

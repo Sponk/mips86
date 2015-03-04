@@ -65,11 +65,11 @@ module OpcodeBuffer
 	
 		if(reset)
 		begin
-			counter <= 0;
+			counter = 0;
 			status <= 0;
 			opcode <= 0;
-			address <= 0;
-			busy <= 0;
+			address = 0;
+			busy = 0;
 		end
 	end
 

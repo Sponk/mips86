@@ -20,23 +20,24 @@ module SimpleRam
 
 	reg [BUS_WIDTH-1:0] memory[0:SIZE];
 
-	always @(addrA)
-		busyA <= 1;
+	reg [BUS_WIDTH-1:0] lastAddrA = 0;
+	reg [BUS_WIDTH-1:0] lastAddrB = 0;
 
-	always @(addrB)
-		busyB <= 1;
-
-	always @(negedge clk)
+	always @(clk)
 	begin
+	
 		if(writeEnable)
 		begin
 			outA <= dataIn;
 			memory[addrA] <= dataIn;
 		end
-	end
-
-	always @(posedge clk or negedge clk)
-	begin
+	
+		if(addrA != lastAddrA)
+			busyA <= 1;
+			
+		if(addrB != lastAddrB)
+			busyA <= 1;
+	
 		if(~writeEnable)
 		begin
 			busyA <= 0;
@@ -45,6 +46,9 @@ module SimpleRam
 			busyB <= 0;
 			outB <= memory[addrB];
 		end
+	
+		lastAddrA = addrA;
+		lastAddrB = addrB;
 	
 		if(reset)
 		begin

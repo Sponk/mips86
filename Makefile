@@ -39,8 +39,10 @@ mmu-test:
 opcode-buffer-test: 
 	@$(MAKE) -s -C tests opcode-buffer-test
 
+dataflow-test: 
+	@$(MAKE) -s -C tests dataflow-test
 
-test: all emu-test alu-test fpu-test extend-test utils-test ram-test rom-test mmu-test opcode-buffer-test
+test: all emu-test alu-test fpu-test extend-test utils-test ram-test rom-test mmu-test opcode-buffer-test dataflow-test
 
 statistics:
 	@cloc .

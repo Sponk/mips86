@@ -38,7 +38,7 @@ module ArithmeticLogicUnit
 	assign out = output_register;
 	assign overflow = overflow_register;
 		
-	BitAdder adder(.a(adda),.b(addb),.substract(addcin),.out(adds),.carry(addcout));
+	BitAdder #(.BUS_WIDTH(BUS_WIDTH))  adder(.a(adda),.b(addb),.substract(addcin),.out(adds),.carry(addcout));
 
 	always @(*)
 	begin	

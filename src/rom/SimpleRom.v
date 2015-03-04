@@ -21,7 +21,7 @@ module SimpleRom
 
 	initial $readmemh(initfile, data);
 
-	always @(posedge clk or negedge clk)
+	always @(clk)
 	begin
 		dataOut <= data[select];
 		dataOutA <= data[selectA];

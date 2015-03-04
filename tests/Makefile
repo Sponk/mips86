@@ -25,7 +25,6 @@ extend-test:
 	@echo Finished extend-test.
 	@echo "************************************************************"
 
-
 utils-test:
 	@echo "************************************************************"
 	@echo Executing utils-test...
@@ -69,7 +68,14 @@ opcode-buffer-test:
 	@echo Finished opcode-buffer-test.
 	@echo "************************************************************"
 
-
+dataflow-test:
+	$(MAKE) -C os
+	@echo "************************************************************"
+	@echo Executing dataflow-test...
+	@iverilog -Iinclude ../src/extender/*.v ../src/utils/*.v dataflow/*.v ../src/opcode-buffer/*.v ../src/mmu/*.v ../src/rom/*.v ../src/ram/*.v ../src/dataflow/*.v ../src/alu/*.v -o $(BINDIR)/dataflow-test
+	@cd $(BINDIR) && ./dataflow-test
+	@echo Finished dataflow-test.
+	@echo "************************************************************"
 
 emu-test:
 	$(MAKE) -C os test
