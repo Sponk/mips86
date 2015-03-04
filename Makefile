@@ -42,4 +42,7 @@ opcode-buffer-test:
 
 test: emu-test tools alu-test fpu-test extend-test utils-test ram-test rom-test mmu-test opcode-buffer-test
 
+statistics:
+	@cloc .
+
 .PHONY: clean 
