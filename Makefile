@@ -40,6 +40,6 @@ opcode-buffer-test:
 	@$(MAKE) -s -C tests opcode-buffer-test
 
 
-test: alu-test fpu-test extend-test utils-test ram-test rom-test mmu-test opcode-buffer-test
+test: emu-test tools alu-test fpu-test extend-test utils-test ram-test rom-test mmu-test opcode-buffer-test
 
-.PHONY: clean tools
+.PHONY: clean 

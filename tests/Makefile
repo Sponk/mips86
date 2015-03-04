@@ -76,4 +76,4 @@ emu-test:
 	$(MAKE) -C os test
 
 clean:
-	@echo "Not yet implemented!"
+	@rm -rf $(BINDIR)/*
