@@ -43,8 +43,6 @@ module OpcodeBuffer
 		begin
 			if(~ramBusy)
 			begin
-				$display("Fetching opcode: %h = %h", address, ramData);
-				
 				operation[counter] = ramData;
 				
 				request = 1;

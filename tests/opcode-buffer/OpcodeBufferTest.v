@@ -25,19 +25,6 @@ module OpcodeBufferTest;
 
 	SimpleMmu mmu(clk, reset, addrA, addrB, writeEnable, dataIn, requestA, requestB, outA, outB, busyA, busyB);
 
-	/*input wire clk,
-			input wire reset,
-			input wire [ADDRESS_WIDTH-1:0] ip,
-			input wire startLoading,
-
-			input wire [7:0] ramData,
-			input wire ramBusy,
-
-			output reg busy,
-			output reg [WORD_WIDTH-1:0] opcode,
-			
-			output reg [ADDRESS_WIDTH-1:0] address
-*/
 	reg [31:0] ip;
 	wire busy;
 	wire [31:0] opcode;
@@ -57,9 +44,15 @@ module OpcodeBufferTest;
 		ip = 0;
 		startLoading = 1;
 
-		#500 @(negedge busy) $display("Got opcode: %h", opcode);
+		#500 @(negedge busy) $display("Got opcode: %h = %h", ip, opcode);
+
+		#10 startLoading = 0;
+
+		ip = 4;
+		startLoading = 1;
+		#500 @(negedge busy) $display("Got opcode: %h = %h", ip, opcode);
+
 
 		$finish;		
 	end
-
 endmodule
