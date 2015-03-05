@@ -44,14 +44,17 @@ module OpcodeBufferTest;
 		ip = 0;
 		startLoading = 1;
 
-		#500 @(negedge busy) $display("Got opcode: %h = %h", ip, opcode);
+		#300 @(negedge busy) $display("Got opcode: %h = %h", ip, opcode);
 
 		#10 startLoading = 0;
 
 		ip = 4;
 		startLoading = 1;
-		#500 @(negedge busy) $display("Got opcode: %h = %h", ip, opcode);
+		#300 @(negedge busy) $display("Got opcode: %h = %h", ip, opcode);
 
+		ip = 8;
+		startLoading = 1;
+		#300 @(negedge busy) $display("Got opcode: %h = %h", ip, opcode);
 
 		$finish;		
 	end

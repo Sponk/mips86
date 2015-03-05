@@ -27,6 +27,7 @@ module SimpleDataflow(input wire clk, input wire reset);
 	OpcodeBuffer ob(clk, reset, ip, startLoading, outB, busyB, busy, opcode, addrB, requestB);
 
 	reg resetCounter = 0;
+	reg opcodeFetchDelay = 0;
 	reg pipelineStall = 0;
 
 	// ALU!
@@ -79,12 +80,14 @@ module SimpleDataflow(input wire clk, input wire reset);
 		if(newOp)
 			aluSubmitted = 0;
 	
+		opcodeFetchDelay = opcodeFetchDelay + 1;
 		branching = 0;
 		case(op)
 			// addi
 			'b001000: begin
 				if(~aluSubmitted)
 				begin
+					$display("addi %d %d %h", rs, rt, imm);
 					signExtendSelect = 0;
 					aluControl = 0;
 					aluB = registers[rs];
@@ -99,6 +102,7 @@ module SimpleDataflow(input wire clk, input wire reset);
 			'b001100: begin
 				if(~aluSubmitted)
 				begin
+					$display("andi %d %d %h", rs, rt, imm);
 					signExtendSelect = 0;
 
 					aluControl = 4;
@@ -114,6 +118,7 @@ module SimpleDataflow(input wire clk, input wire reset);
 			'b001101: begin
 				if(~aluSubmitted)
 				begin
+					$display("ori %d %d %h", rs, rt, imm);
 					signExtendSelect = 0;
 					aluControl = 3;
 					aluB = registers[rs];
@@ -132,15 +137,12 @@ module SimpleDataflow(input wire clk, input wire reset);
 					ip = opcode[25:0];
 					aluSubmitted = 1;
 					branching = 1;
-					$display("Jumping to: 0x%h", ip);
+					$display("j 0x%h", ip);
 				end
-				else if(~busy)
-					branching = 0;	
 			end
 
 		endcase
-
-		resetCounter = 1;
+		
 		if(reset)
 		begin
 			ip = 0;
@@ -151,18 +153,25 @@ module SimpleDataflow(input wire clk, input wire reset);
 			resetCounter = 0;
 			decodeOpcodeStage = 0;
 			pipelineStall = 0;
+			opcodeFetchDelay = 0;
 
                 	for(i = 0; i < 32; i = i + 1)
                			registers[i] = 0; 
 		end
 
+		//startLoading = 0;
 		newOp = 0;
-		if(~busy & resetCounter & ~pipelineStall & ~branching)
+		if(~busy & resetCounter & ~pipelineStall & ~opcodeFetchDelay)
 		begin
 			newOp = 1;
 			startLoading = 1;
 			decodeOpcodeStage = opcode;
-			ip = ip + 4;
+			opcodeFetchDelay = 0;		
+	
+			if(~branching)
+				ip = ip + 4;
 		end
+
+		resetCounter = 1;
 	end
 endmodule

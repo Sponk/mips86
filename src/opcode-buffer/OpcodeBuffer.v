@@ -48,7 +48,6 @@ module OpcodeBuffer
 				request = 1;
 				counter = counter + 1;
 				address = address + 1;
-
 			end
 		end
 
