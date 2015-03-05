@@ -134,7 +134,8 @@ module SimpleDataflow(input wire clk, input wire reset);
 				if(~aluSubmitted)
 				begin
 					signExtendSelect = 1;
-					ip = opcode[25:0];
+					//ip = opcode[25:0];
+					ip = (ip & 'hF0000000) | (opcode[25:0] << 2);
 					aluSubmitted = 1;
 					branching = 1;
 					$display("j 0x%h", ip);

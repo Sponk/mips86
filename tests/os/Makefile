@@ -1,6 +1,8 @@
 SRCS=$(wildcard *.c *.asm)
 OBJS=$(addsuffix .o,$(basename $(SRCS)))
 
+CFLAGS=-nostdlib -static -mabi=32
+
 %.o : %.c
 	mips64-linux-gnu-gcc $(CFLAGS) $< -o $@
 

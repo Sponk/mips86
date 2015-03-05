@@ -18,7 +18,7 @@ module SimpleDataflowTest;
 		reset = 1;
 		#20 reset = 0;
 	
-		#3000 $finish;
+		#10000 $finish;
 	end
 
 endmodule
