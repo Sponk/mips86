@@ -87,7 +87,7 @@ module SimpleDataflow(input wire clk, input wire reset);
 			'b001000: begin
 				if(~aluSubmitted)
 				begin
-					$display("addi %d %d %h", rs, rt, imm);
+					$display("0x%h\taddi %d %d %h", ip, rs, rt, imm);
 					signExtendSelect = 0;
 					aluControl = 0;
 					aluB = registers[rs];
@@ -102,7 +102,7 @@ module SimpleDataflow(input wire clk, input wire reset);
 			'b001100: begin
 				if(~aluSubmitted)
 				begin
-					$display("andi %d %d %h", rs, rt, imm);
+					$display("0x%h\tandi %d %d %h", ip, rs, rt, imm);
 					signExtendSelect = 0;
 
 					aluControl = 4;
@@ -118,7 +118,7 @@ module SimpleDataflow(input wire clk, input wire reset);
 			'b001101: begin
 				if(~aluSubmitted)
 				begin
-					$display("ori %d %d %h", rs, rt, imm);
+					$display("0x%h\tori %d %d %h", ip, rs, rt, imm);
 					signExtendSelect = 0;
 					aluControl = 3;
 					aluB = registers[rs];
@@ -138,9 +138,11 @@ module SimpleDataflow(input wire clk, input wire reset);
 					ip = (ip & 'hF0000000) | (opcode[25:0] << 2);
 					aluSubmitted = 1;
 					branching = 1;
-					$display("j 0x%h", ip);
+					$display("0x%h\tj 0x%h", ip, ip);
 				end
 			end
+			
+			default: $display("Unknown opcode at 0x%h: 0x%h", ip, op);
 
 		endcase
 		
