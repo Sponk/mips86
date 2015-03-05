@@ -7,7 +7,7 @@ CFLAGS=-nostdlib -static -mabi=32
 	mips64-linux-gnu-gcc $(CFLAGS) $< -o $@
 
 %.o : %.asm
-	mips64-linux-gnu-as $(ASFLAGS) $< -o $@
+	mips64-linux-gnu-as $(ASFLAGS) -g2 $< -o $@
 
 all: $(OBJS)
 	mips64-linux-gnu-ld $(OBJS) -T link.ld -o $(BINDIR)/kernel.elf	

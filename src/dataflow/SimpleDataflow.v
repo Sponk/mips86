@@ -49,6 +49,11 @@ module SimpleDataflow(input wire clk, input wire reset);
 	wire [4:0] rs = decodeOpcodeStage[25:21];
 	wire [4:0] rt = decodeOpcodeStage[20:16];
 
+	// R-Type instructions
+	wire [4:0] rd = decodeOpcodeStage[15:11];
+	wire [4:0] shamt = decodeOpcodeStage[10:6];
+	wire [5:0] func = decodeOpcodeStage[5:0];
+
 	reg signExtendSelect = 0;
 	reg [15:0] signExtend = 0;
 	wire [31:0] signExtendOut;
@@ -83,6 +88,51 @@ module SimpleDataflow(input wire clk, input wire reset);
 		opcodeFetchDelay = opcodeFetchDelay + 1;
 		branching = 0;
 		case(op)
+
+			// R-Type instructions
+			'b000000: begin
+				case(func)
+					// sll
+					'b000000: begin
+						if(~aluSubmitted)
+						begin
+
+							// NOP
+							if(decodeOpcodeStage != 0)
+							begin
+								$display("0x%h\tsll %d %d %d", ip, rs,rt,shamt);
+								signExtendSelect = 1;
+								signExtend = shamt;
+								aluControl = 3;
+								aluB = registers[rt];				
+							end
+							else
+								$display("0x%h\tnop", ip);
+							aluSubmitted = 1;
+						end	
+						else
+							registers[rd] = aluOut;	
+					end
+
+					'b100000: begin
+						if(~aluSubmitted)
+						begin
+							$display("0x%h\tadd %d %d %d", ip, rs,rt,rd);
+							signExtendSelect = 1;
+							signExtend = registers[rs];
+							aluControl = 0;
+							aluB = registers[rt];
+							aluSubmitted = 1;
+						end	
+						else
+							registers[rd] = aluOut;	
+					end
+
+					default: $display("0x%h\t Unknown R-Type instruction: 0x%h", ip, func);
+				endcase
+			end
+
+			// I-Type instructions
 			// addi
 			'b001000: begin
 				if(~aluSubmitted)
@@ -138,7 +188,27 @@ module SimpleDataflow(input wire clk, input wire reset);
 					ip = (ip & 'hF0000000) | (opcode[25:0] << 2);
 					aluSubmitted = 1;
 					branching = 1;
+					resetCounter = 0;
 					$display("0x%h\tj 0x%h", ip, ip);
+				end
+			end
+
+			// beq
+			'b000100: begin
+				if(~aluSubmitted && registers[rs] == registers[rt])
+				begin
+					ip = ip + (imm << 2);
+					$display("0x%h\tbeq 0x%h", ip, ip);
+					aluSubmitted = 1;
+					branching = 1;
+				end
+				else if(~aluSubmitted)
+				begin
+					ip = ip + 4;
+					$display("0x%h\tbeq 0x%h", ip, ip);
+					aluSubmitted = 1;
+					branching = 1;
+
 				end
 			end
 			
