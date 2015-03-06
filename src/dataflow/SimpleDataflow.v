@@ -101,9 +101,10 @@ module SimpleDataflow(input wire clk, input wire reset);
 							if(decodeOpcodeStage != 0)
 							begin
 								$display("0x%h\tsll %d %d %d", ip, rs,rt,shamt);
+								signExtendMode = 0;
 								signExtendSelect = 1;
 								signExtend = shamt;
-								aluControl = 3;
+								aluControl = 2;
 								aluB = registers[rt];				
 							end
 							else
@@ -137,8 +138,9 @@ module SimpleDataflow(input wire clk, input wire reset);
 			'b001000: begin
 				if(~aluSubmitted)
 				begin
-					$display("0x%h\taddi %d %d %h", ip, rs, rt, imm);
+					$display("0x%h\taddi %d %d 0x%h", ip, rs, rt, imm);
 					signExtendSelect = 0;
+					signExtendMode = 1;
 					aluControl = 0;
 					aluB = registers[rs];
 					//signExtendIn = imm;
@@ -152,8 +154,9 @@ module SimpleDataflow(input wire clk, input wire reset);
 			'b001100: begin
 				if(~aluSubmitted)
 				begin
-					$display("0x%h\tandi %d %d %h", ip, rs, rt, imm);
+					$display("0x%h\tandi %d %d 0x%h", ip, rs, rt, imm);
 					signExtendSelect = 0;
+					signExtendMode = 0;
 
 					aluControl = 4;
 					aluB = registers[rs];
@@ -168,8 +171,9 @@ module SimpleDataflow(input wire clk, input wire reset);
 			'b001101: begin
 				if(~aluSubmitted)
 				begin
-					$display("0x%h\tori %d %d %h", ip, rs, rt, imm);
+					$display("0x%h\tori %d %d 0x%h", ip, rs, rt, imm);
 					signExtendSelect = 0;
+					signExtendMode = 0;
 					aluControl = 3;
 					aluB = registers[rs];
 					//signExtendIn = imm;
@@ -179,6 +183,24 @@ module SimpleDataflow(input wire clk, input wire reset);
 					registers[rt] = aluOut;	
 			end
 
+			// lui
+			'b001111: begin
+				if(~aluSubmitted)
+				begin
+					$display("0x%h\tlui %d 0x%h", ip, rt, imm);
+
+					signExtendMode = 0;
+					signExtendSelect = 1;
+					aluControl = 2; 
+					signExtend = imm;
+					aluB = 16;
+					aluSubmitted = 1;
+				end
+				else
+					registers[rt] = aluOut;
+			end
+
+			// J-Type instructions
 			// j
 			'b000010: begin
 				if(~aluSubmitted)

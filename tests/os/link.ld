@@ -3,6 +3,8 @@ SECTIONS
 {
  . = 0x0000;
  .text : { *(.text) }
+ .rodata : {*(.rodata) }
+ . = . + 256;
  .data : { *(.data) }
  .bss : { *(.bss COMMON) }
  . = ALIGN(8);
