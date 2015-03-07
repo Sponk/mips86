@@ -23,6 +23,9 @@ module SimpleRam
 	reg [BUS_WIDTH-1:0] lastAddrA = 0;
 	reg [BUS_WIDTH-1:0] lastAddrB = 0;
 
+	// Counter variable for initialization
+	integer i;
+
 	always @(clk)
 	begin
 	
@@ -30,6 +33,8 @@ module SimpleRam
 		begin
 			outA <= dataIn;
 			memory[addrA] <= dataIn;
+
+			$writememh("ram.hex", memory);
 		end
 	
 		if(addrA != lastAddrA)
@@ -57,6 +62,9 @@ module SimpleRam
 
 			outA <= 0;
 			outB <= 0;
+			
+			for(i = 0; i < SIZE; i=i+1)
+				memory[i] <= 0;
 		end
 	end
 

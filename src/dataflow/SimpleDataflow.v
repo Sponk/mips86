@@ -16,7 +16,8 @@ module SimpleDataflow(input wire clk, input wire reset);
 	wire busyA;
 	wire busyB;
 
-	SimpleMmu mmu(clk, reset, addrA, addrB, writeEnable, dataIn, requestA, requestB, outA, outB, busyA, busyB);
+	SimpleMmu 	#(.ROM_SIZE(1024), .RAM_SIZE(8192))
+			mmu(clk, reset, addrA, addrB, writeEnable, dataIn, requestA, requestB, outA, outB, busyA, busyB);
 
 	reg [31:0] ip;
 	wire busy;
@@ -115,6 +116,7 @@ module SimpleDataflow(input wire clk, input wire reset);
 							registers[rd] = aluOut;	
 					end
 
+					// add
 					'b100000: begin
 						if(~aluSubmitted)
 						begin
@@ -127,6 +129,18 @@ module SimpleDataflow(input wire clk, input wire reset);
 						end	
 						else
 							registers[rd] = aluOut;	
+					end
+					
+					// jr	
+					'b001000: begin
+						if(~aluSubmitted)
+						begin
+							$display("0x%h\tjr %d", ip, rs);
+							ip = registers[rs];
+							aluSubmitted = 1;
+							resetCounter = 0;
+							branching = 1;
+						end	
 					end
 
 					default: $display("0x%h\t Unknown R-Type instruction: 0x%h", ip, func);
@@ -206,7 +220,6 @@ module SimpleDataflow(input wire clk, input wire reset);
 				if(~aluSubmitted)
 				begin
 					signExtendSelect = 1;
-					//ip = opcode[25:0];
 					ip = (ip & 'hF0000000) | (opcode[25:0] << 2);
 					aluSubmitted = 1;
 					branching = 1;
@@ -233,7 +246,47 @@ module SimpleDataflow(input wire clk, input wire reset);
 
 				end
 			end
+
+			// lb
+			'b100000: begin
+				if(~aluSubmitted)
+				begin
+					$display("0x%h\tlb %d 0x%h", ip, rt, rs + imm);
+					aluSubmitted = 1;
+					pipelineStall = 1;
+					// FIXME: Use ALU for that!
+					addrA = registers[rs] + imm;
+					requestA = 1;
+				end
+				else if(~busyA)
+				begin
+					pipelineStall = 0;
+					registers[rt] = outA;
+					requestA = 0;
+				end
+			end
 			
+			// sb
+			'b101000: begin
+				if(~aluSubmitted)
+				begin
+					$display("0x%h\tsb %d 0x%h", ip, rt, rs + imm);
+					aluSubmitted = 1;
+					pipelineStall = 1;
+					// FIXME: Use ALU for that!
+					addrA = registers[rs] + imm;
+					dataIn = ('hff & registers[rt]);
+					requestA = 1;
+					writeEnable = 1;
+				end
+				else if(~busyA)
+				begin
+					pipelineStall = 0;
+					requestA = 0;
+					writeEnable = 0;
+				end
+			end
+
 			default: $display("Unknown opcode at 0x%h: 0x%h", ip, op);
 
 		endcase

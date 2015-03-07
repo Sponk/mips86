@@ -69,6 +69,7 @@ opcode-buffer-test:
 	@echo "************************************************************"
 
 dataflow-test:
+	$(MAKE) -C bios
 	$(MAKE) -C os
 	@echo "************************************************************"
 	@echo Executing dataflow-test...
@@ -78,7 +79,11 @@ dataflow-test:
 	@echo "************************************************************"
 
 emu-test:
-	$(MAKE) -C os test
+	# $(MAKE) -C bios test
+	# $(MAKE) -C os test
+	# $(BINDIR)/mips86emu $(BINDIR)/kernel.bin
 
 clean:
 	@rm -rf $(BINDIR)/*
+	$(MAKE) -C bios clean
+	$(MAKE) -C os clean

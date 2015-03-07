@@ -16,9 +16,11 @@ start:
 	lui $s5, %hi(string1)
 	ori $s5, $s5, %lo(string1) 
 
+	addi $t0, $0, start
+	
+	nop
 	nop
 	j start
 
 .data
 string1: .asciiz "Hello World!\n"
-

@@ -50,10 +50,10 @@ module SimpleMmu
 
 	wire ramWriteEnable;
 
-	SimpleRam ram(clk, reset, physAddrA, dataIn, ramWriteEnable, physAddrB, ramOutA,
+	SimpleRam #(.SIZE(RAM_SIZE)) ram(clk, reset, physAddrA, dataIn, ramWriteEnable, physAddrB, ramOutA,
 				ramOutB, ramBusyA, ramBusyB);
 
-	SimpleRom rom(clk, physAddrA, physAddrB, romOutA, romOutB);
+	SimpleRom #(.SIZE(ROM_SIZE)) rom(clk, physAddrA, physAddrB, romOutA, romOutB);
 
 	reg [7:0] romCounter = 0;
 	reg srcA = 0;

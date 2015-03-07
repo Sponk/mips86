@@ -1,22 +1,20 @@
 SRCS=$(wildcard *.c *.asm)
 OBJS=$(addsuffix .o,$(basename $(SRCS)))
 
-CFLAGS=-nostdlib -static -mabi=32
+CFLAGS=-nostdlib -static -ffreestanding
 
 %.o : %.c
-	mips64-linux-gnu-gcc $(CFLAGS) $< -o $@
+	mips64-linux-gnu-gcc $(CFLAGS) -g -c $< -o $@
 
 %.o : %.asm
 	mips64-linux-gnu-as $(ASFLAGS) -g2 $< -o $@
 
 all: $(OBJS)
 	mips64-linux-gnu-ld $(OBJS) -T link.ld -o $(BINDIR)/kernel.elf	
-	mips64-linux-gnu-objcopy --only-section=.text -O binary $(BINDIR)/kernel.elf $(BINDIR)/kernel.bin
-	$(BINDIR)/bin2hex $(BINDIR)/kernel.bin > $(BINDIR)/kernel.hex
+	mips64-linux-gnu-objcopy -O binary $(BINDIR)/kernel.elf $(BINDIR)/kernel.bin
+	$(BINDIR)/bin2hex $(BINDIR)/kernel.bin >> $(BINDIR)/kernel.hex
 
 test: all
-	@cp kernel.bin $(BINDIR)
-	$(BINDIR)/mips86emu $(BINDIR)/kernel.bin
 
 clean:
 	@rm -rf *.o

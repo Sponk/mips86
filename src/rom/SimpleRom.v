@@ -4,7 +4,7 @@
 module SimpleRom
 	#(parameter BUS_WIDTH = 8,
 	  parameter SELECT_WIDTH = 32,
-	  parameter MEMORY_SIZE = 128) // Size in byte
+	  parameter SIZE = 128) // Size in byte
 	  
 	(
 		input wire clk,
@@ -17,9 +17,16 @@ module SimpleRom
 	
 	parameter initfile = "kernel.hex";
 
-	reg [BUS_WIDTH-1:0] data [0:MEMORY_SIZE-1];
+	reg [BUS_WIDTH-1:0] data [0:SIZE-1];
 
-	initial $readmemh(initfile, data);
+	integer i;
+	initial begin
+
+		for(i = 0; i < SIZE; i = i + 1)
+			data[i] = 0;		
+
+		$readmemh(initfile, data);
+	end
 
 	always @(clk)
 	begin
