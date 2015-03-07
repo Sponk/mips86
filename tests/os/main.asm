@@ -17,10 +17,10 @@ start:
 	ori $s5, $s5, %lo(string1) 
 
 	addi $t0, $0, start
-	
-	nop
+
 	nop
 	j start
+	# jr $t0 
 
 .data
 string1: .asciiz "Hello World!\n"

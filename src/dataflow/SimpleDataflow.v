@@ -245,7 +245,7 @@ module SimpleDataflow(input wire clk, input wire reset);
 				if(~aluSubmitted)
 				begin
 					signExtendSelect = 1;
-					ip = (ip & 'hF0000000) | (opcode[25:0] << 2);
+					ip = ip[31:28] | (decodeOpcodeStage[25:0] << 2);
 					aluSubmitted = 1;
 					branching = 1;
 					resetCounter = 0;
