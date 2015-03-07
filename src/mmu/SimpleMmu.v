@@ -6,7 +6,8 @@ module SimpleMmu
 		parameter BUS_WIDTH = 8, 
 		parameter ADDRESS_WIDTH = 32,
 		parameter ROM_DELAY = 2,
- 		parameter RAM_DELAY = 1 
+ 		parameter RAM_DELAY = 1,
+		parameter SHIFT = 0 
 	)
 	(
 		input wire clk,
@@ -50,10 +51,10 @@ module SimpleMmu
 
 	wire ramWriteEnable;
 
-	SimpleRam #(.SIZE(RAM_SIZE)) ram(clk, reset, physAddrA, dataIn, ramWriteEnable, physAddrB, ramOutA,
+	SimpleRam #(.BUS_WIDTH(BUS_WIDTH), .SIZE(RAM_SIZE)) ram(clk, reset, physAddrA, dataIn, ramWriteEnable, physAddrB, ramOutA,
 				ramOutB, ramBusyA, ramBusyB);
 
-	SimpleRom #(.SIZE(ROM_SIZE)) rom(clk, physAddrA, physAddrB, romOutA, romOutB);
+	SimpleRom #(.BUS_WIDTH(BUS_WIDTH), .SIZE(ROM_SIZE)) rom(clk, physAddrA, physAddrB, romOutA, romOutB);
 
 	reg [7:0] romCounter = 0;
 	reg srcA = 0;
@@ -70,14 +71,14 @@ module SimpleMmu
 				srcA = 0;
 				regBusyA = 1;
 				romCounter = 0;
-				physAddrA = addrA;
+				physAddrA = addrA >> SHIFT;
 			end
 			else
 			begin
 				romCounter = 0;
 				srcA = 1;
 				regBusyA = 1;
-				physAddrA = addrA - ROM_SIZE;
+				physAddrA = (addrA - ROM_SIZE) >> SHIFT;
 			end
 		end
 
@@ -88,14 +89,14 @@ module SimpleMmu
 				srcB = 0;
 				regBusyB = 1;
 				romCounter = 0;
-				physAddrB = addrB;
+				physAddrB = addrB >> SHIFT;
 			end
 			else
 			begin
 				romCounter = 0;
 				srcB = 1;
 				regBusyB = 1;
-				physAddrB = addrB - ROM_SIZE;
+				physAddrB = (addrB - ROM_SIZE) >> SHIFT;
 			end
 		end
 

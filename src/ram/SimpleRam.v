@@ -18,7 +18,7 @@ module SimpleRam
 		output reg busyB
 	);
 
-	reg [BUS_WIDTH-1:0] memory[0:SIZE];
+	reg [BUS_WIDTH-1:0] memory[0:SIZE-1];
 
 	reg [BUS_WIDTH-1:0] lastAddrA = 0;
 	reg [BUS_WIDTH-1:0] lastAddrB = 0;
@@ -34,7 +34,7 @@ module SimpleRam
 			outA <= dataIn;
 			memory[addrA] <= dataIn;
 
-			$writememh("ram.hex", memory);
+			// $writememh("ram.hex", memory);
 		end
 	
 		if(addrA != lastAddrA)

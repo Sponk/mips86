@@ -11,12 +11,12 @@ start:
 loop:
 	beq $s0, $s1, end
 	
-	lb $s2, 0($s0)
+	lw $s2, 0($s0)
 
-	sb $s2, 0($t0)
+	sw $s2, 0($t0)
 
-	addi $s0, $s0, 1	
-	addi $t0, $t0, 1
+	addi $s0, $s0, 4	
+	addi $t0, $t0, 4 
 
 	nop
 	j loop

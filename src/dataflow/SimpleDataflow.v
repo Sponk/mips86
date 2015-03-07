@@ -5,18 +5,18 @@ module SimpleDataflow(input wire clk, input wire reset);
 	wire [31:0] addrB;
 
 	reg writeEnable = 0;
-	reg [7:0] dataIn;
+	reg [31:0] dataIn;
 
 	reg requestA;
 	wire requestB;
 
-	wire [7:0] outA;
-	wire [7:0] outB;
+	wire [31:0] outA;
+	wire [31:0] outB;
 
 	wire busyA;
 	wire busyB;
 
-	SimpleMmu 	#(.ROM_SIZE(1024), .RAM_SIZE(8192))
+	SimpleMmu #(.SHIFT(2), .BUS_WIDTH(32), .ROM_SIZE(1024), .RAM_SIZE(8192))
 			mmu(clk, reset, addrA, addrB, writeEnable, dataIn, requestA, requestB, outA, outB, busyA, busyB);
 
 	reg [31:0] ip;
@@ -25,7 +25,7 @@ module SimpleDataflow(input wire clk, input wire reset);
 	reg [31:0] decodeOpcodeStage = 0;
 	reg startLoading;
 	
-	OpcodeBuffer ob(clk, reset, ip, startLoading, outB, busyB, busy, opcode, addrB, requestB);
+	WordOpcodeBuffer ob(clk, reset, ip, startLoading, outB, busyB, busy, opcode, addrB, requestB);
 
 	reg resetCounter = 0;
 	reg opcodeFetchDelay = 0;
@@ -143,6 +143,16 @@ module SimpleDataflow(input wire clk, input wire reset);
 						end	
 					end
 
+					// move
+					'b101101: begin
+						if(~aluSubmitted)
+						begin
+							$display("0x%h\tmove %d %d", ip, rs, rd);
+							aluSubmitted = 1;
+							registers[rd] = registers[rs];
+						end
+					end
+
 					default: $display("0x%h\t Unknown R-Type instruction: 0x%h", ip, func);
 				endcase
 			end
@@ -158,6 +168,21 @@ module SimpleDataflow(input wire clk, input wire reset);
 					aluControl = 0;
 					aluB = registers[rs];
 					//signExtendIn = imm;
+					aluSubmitted = 1;
+				end	
+				else
+					registers[rt] = aluOut;		
+			end		
+
+			// addiu (currently no difference to addi)
+			'b001001: begin
+				if(~aluSubmitted)
+				begin
+					$display("0x%h\taddiu %d %d 0x%h", ip, rs, rt, imm);
+					signExtendSelect = 0;
+					signExtendMode = 1;
+					aluControl = 0;
+					aluB = registers[rs];
 					aluSubmitted = 1;
 				end	
 				else
@@ -247,11 +272,11 @@ module SimpleDataflow(input wire clk, input wire reset);
 				end
 			end
 
-			// lb
-			'b100000: begin
+			// lw
+			'b100011: begin
 				if(~aluSubmitted)
 				begin
-					$display("0x%h\tlb %d 0x%h", ip, rt, rs + imm);
+					$display("0x%h\tlw %d 0x%h", ip, rt, rs + imm);
 					aluSubmitted = 1;
 					pipelineStall = 1;
 					// FIXME: Use ALU for that!
@@ -265,7 +290,69 @@ module SimpleDataflow(input wire clk, input wire reset);
 					requestA = 0;
 				end
 			end
+
+			// ld
+			/*'b101111: begin
+				if(~aluSubmitted)
+				begin
+					$display("0x%h\tlw %d 0x%h", ip, rt, rs + imm);
+					aluSubmitted = 1;
+					pipelineStall = 1;
+					// FIXME: Use ALU for that!
+					addrA = registers[rs] + imm;
+					requestA = 1;
+				end
+				else if(~busyA)
+				begin
+					pipelineStall = 0;
+					registers[rt] = outA;
+					requestA = 0;
+				end
+			end*/
+			// sd
+			'b111111: begin
+				if(~aluSubmitted)
+				begin
+					$display("0x%h\tsd %d 0x%h", ip, rt, rs + imm);
+					aluSubmitted = 1;
+					pipelineStall = 1;
+					// FIXME: Use ALU for that!
+					addrA = registers[rs] + imm;
+					dataIn = registers[rt];
+					requestA = 1;
+					writeEnable = 1;
+				end
+				else if(~busyA)
+				begin
+					pipelineStall = 0;
+					requestA = 0;
+					writeEnable = 0;
+				end
+			end
+
+
 			
+			// sw
+			'b101011: begin
+				if(~aluSubmitted)
+				begin
+					$display("0x%h\tsw %d 0x%h", ip, rt, rs + imm);
+					aluSubmitted = 1;
+					pipelineStall = 1;
+					// FIXME: Use ALU for that!
+					addrA = registers[rs] + imm;
+					dataIn = registers[rt];
+					requestA = 1;
+					writeEnable = 1;
+				end
+				else if(~busyA)
+				begin
+					pipelineStall = 0;
+					requestA = 0;
+					writeEnable = 0;
+				end
+			end
+
 			// sb
 			'b101000: begin
 				if(~aluSubmitted)
