@@ -22,8 +22,19 @@ module OpcodeBufferTest;
 
 	wire busyA;
 	wire busyB;
+	
+	wire [15:0] displayIn = 0;
+	wire [31:0] displayAddr;
+	wire displayWE;
+	Display dsp(clk, displayIn);
 
-	SimpleMmu mmu(clk, reset, addrA, addrB, writeEnable, dataIn, requestA, requestB, outA, outB, busyA, busyB);
+	wire [31:0] mmioInB;
+	wire [31:0] mmioAddrB;
+	wire mmioWEB;
+
+	SimpleMmu mmu(clk, reset, addrA, addrB, writeEnable, dataIn, requestA, requestB, outA, outB, busyA, busyB, 
+			displayIn,displayAddr,displayWE, mmioInB, mmioAddrB, mmioWEB);
+
 
 	reg [31:0] ip;
 	wire busy;

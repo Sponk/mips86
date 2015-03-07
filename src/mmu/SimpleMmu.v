@@ -25,7 +25,15 @@ module SimpleMmu
 		output reg [BUS_WIDTH-1:0] outA,
 		output reg [BUS_WIDTH-1:0] outB,
 		output wire busyA,
-		output wire busyB
+		output wire busyB,
+
+		output reg [BUS_WIDTH-1:0] mmioA,
+		output reg [BUS_WIDTH-1:0] mmioB,
+		output reg [ADDRESS_WIDTH-1:0] mmioAddrA,
+		output reg [ADDRESS_WIDTH-1:0] mmioAddrB,
+
+		output reg mmioWEA,
+		output reg mmioWEB
 	);
 
 	reg [ADDRESS_WIDTH-1:0] physAddrA = 0;
@@ -62,9 +70,6 @@ module SimpleMmu
 
 	assign ramWriteEnable = writeEnable & srcA;
 
-	reg [15:0] displayIn = 0;
-	Display dsp(clk, displayIn);
-
 	always @(clk)
 	begin
 		if(requestA & ~regBusyA)
@@ -78,7 +83,9 @@ module SimpleMmu
 			end
 			else if(addrA >= 'hFFFFFD) // Access to the display
 			begin
-				displayIn = dataIn[15:0];
+				mmioA = dataIn;
+				mmioAddrA = addrA - 'hFFFFFD;
+				mmioWEA = writeEnable;
 			end
 			else
 			begin
