@@ -54,7 +54,7 @@ mmu-test:
 	$(MAKE) -C os
 	@echo "************************************************************"
 	@echo Executing mmu-test...
-	@iverilog -Iinclude mmu/*.v ../src/mmu/*.v ../src/rom/*.v ../src/ram/*.v -o $(BINDIR)/mmu-test
+	@iverilog -Iinclude ../platform/simulation/*.v mmu/*.v ../src/mmu/*.v ../src/rom/*.v ../src/ram/*.v -o $(BINDIR)/mmu-test
 	@cd $(BINDIR) && ./mmu-test
 	@echo Finished mmu-test.
 	@echo "************************************************************"
@@ -63,7 +63,7 @@ opcode-buffer-test:
 	$(MAKE) -C os
 	@echo "************************************************************"
 	@echo Executing opcode-buffer-test...
-	@iverilog -Iinclude opcode-buffer/*.v ../src/opcode-buffer/*.v ../src/mmu/*.v ../src/rom/*.v ../src/ram/*.v -o $(BINDIR)/opcode-buffer-test
+	@iverilog -Iinclude ../platform/simulation/*.v opcode-buffer/*.v ../src/opcode-buffer/*.v ../src/mmu/*.v ../src/rom/*.v ../src/ram/*.v -o $(BINDIR)/opcode-buffer-test
 	@cd $(BINDIR) && ./opcode-buffer-test
 	@echo Finished opcode-buffer-test.
 	@echo "************************************************************"
@@ -73,7 +73,7 @@ dataflow-test:
 	$(MAKE) -C os
 	@echo "************************************************************"
 	@echo Executing dataflow-test...
-	@iverilog -Iinclude ../src/extender/*.v ../src/utils/*.v dataflow/*.v ../src/opcode-buffer/*.v ../src/mmu/*.v ../src/rom/*.v ../src/ram/*.v ../src/dataflow/*.v ../src/alu/*.v -o $(BINDIR)/dataflow-test
+	@iverilog -Iinclude ../platform/simulation/*.v ../src/extender/*.v ../src/utils/*.v dataflow/*.v ../src/opcode-buffer/*.v ../src/mmu/*.v ../src/rom/*.v ../src/ram/*.v ../src/dataflow/*.v ../src/alu/*.v -o $(BINDIR)/dataflow-test
 	@cd $(BINDIR) && ./dataflow-test
 	@echo Finished dataflow-test.
 	@echo "************************************************************"

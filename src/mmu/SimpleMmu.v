@@ -62,6 +62,9 @@ module SimpleMmu
 
 	assign ramWriteEnable = writeEnable & srcA;
 
+	reg [15:0] displayIn = 0;
+	Display dsp(clk, displayIn);
+
 	always @(clk)
 	begin
 		if(requestA & ~regBusyA)
@@ -72,6 +75,10 @@ module SimpleMmu
 				regBusyA = 1;
 				romCounter = 0;
 				physAddrA = addrA >> SHIFT;
+			end
+			else if(addrA >= 'hFFFFFD) // Access to the display
+			begin
+				displayIn = dataIn[15:0];
 			end
 			else
 			begin
