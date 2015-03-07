@@ -1,0 +1,16 @@
+Memory Mapped I/O
+=================
+
+The MIPS86 processor is wired to a dualport 32bit MMU to provide uniform access
+to all memory devices. By default it is wired to a 512 word ROM containing the
+BIOS and a small OS kernel and to a 4096 word RAM which can be used to store
+data.
+
+Addresses:
+	
+Type			| Address Range
+----------------------------------------------------------------
+ROM     		| 0x0 -> ROM_SIZE - 1
+RAM			| ROM_SIZE -> ROM_SIZE + RAM_SIZE - 1
+7-Segment Display	| 0xFFFFFD -> 0xFFFFFF
+VGA Memory		| 0xFFFFFC - VGA_MEMORY_SIZE -> 0xFFFFFC

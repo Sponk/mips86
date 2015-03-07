@@ -7,7 +7,7 @@ start:
 	lui $sp, %hi(stack)
 	ori $sp, %lo(stack)
 
-	addi $sp, $sp, 0x200
+	addi $sp, $sp, 0x100 # STACK_SIZE
 
 	# put something on the stack
 	addi $s0, $0, 200
