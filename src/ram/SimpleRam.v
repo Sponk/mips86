@@ -26,6 +26,9 @@ module SimpleRam
 	// Counter variable for initialization
 	integer i;
 
+	// For debugging
+	always @(posedge reset) $writememh("ram.hex", memory);
+
 	always @(clk)
 	begin
 	
@@ -34,7 +37,6 @@ module SimpleRam
 			outA <= dataIn;
 			memory[addrA] <= dataIn;
 
-			// $writememh("ram.hex", memory);
 		end
 	
 		if(addrA != lastAddrA)

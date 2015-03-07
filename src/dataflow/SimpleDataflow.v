@@ -86,6 +86,7 @@ module SimpleDataflow(input wire clk, input wire reset);
 		if(newOp)
 			aluSubmitted = 0;
 	
+		registers[0] = 0;
 		opcodeFetchDelay = opcodeFetchDelay + 1;
 		branching = 0;
 		case(op)
@@ -249,6 +250,7 @@ module SimpleDataflow(input wire clk, input wire reset);
 					aluSubmitted = 1;
 					branching = 1;
 					resetCounter = 0;
+					opcodeFetchDelay = 1;
 					$display("0x%h\tj 0x%h", ip, ip);
 				end
 			end

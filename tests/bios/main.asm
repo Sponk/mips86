@@ -9,6 +9,7 @@ start:
 	addi $s1, $s0, 0x100
 
 loop:
+	nop
 	beq $s0, $s1, end
 	
 	lw $s2, 0($s0)

@@ -2,21 +2,20 @@
 
 .globl start
 start:
+	nop
+	# set up stack	
+	lui $sp, %hi(stack)
+	ori $sp, %lo(stack)
 
-	addi $s0, $0, 5
-	addi $s1, $0, 25
-	add $s2, $s1, $s0
+	addi $sp, $sp, 0x200
 
-	lui $s3, 0xDEAD
-	ori $s3, $s3, 0xBEEF	
+	# put something on the stack
+	addi $s0, $0, 200
+	sw $s0, 0($sp)
 
-	lui $s4, 0xCAFE	
-	ori $s4, $s4, 0xBABE
+	lw $s1, 0($sp)
+	sw $s1, 0($sp)
 
-	lui $s5, %hi(string1)
-	ori $s5, $s5, %lo(string1) 
-
-	addi $t0, $0, start
 
 	nop
 	j start
@@ -24,3 +23,4 @@ start:
 
 .data
 string1: .asciiz "Hello World!\n"
+stack:

@@ -18,7 +18,15 @@ module SimpleDataflowTest;
 		reset = 1;
 		#20 reset = 0;
 	
-		#3000000 $finish;
+		// #3000000 $finish;
+
+		// Give components the chance to
+		// dump data to the file system
+		#3000000 reset = 1;
+
+		#20 reset = 0;
+		$finish;
+
 	end
 
 endmodule
