@@ -1,0 +1,8 @@
+INTSTYLE=ise
+INFILE=/home/yannick/Projekte/verilog/mips86/platform/basys2/display/Display.ncd
+OUTFILE=/home/yannick/Projekte/verilog/mips86/platform/basys2/display/Display.bit
+FAMILY=Spartan3E
+PART=xc3s250e-4cp132
+WORKINGDIR=/home/yannick/Projekte/verilog/mips86/platform/basys2/display
+LICENSE=WebPack
+USER_INFO=210703268_0_0_038
