@@ -1,0 +1,14 @@
+
+NET ps2data LOC = C3;
+NET ps2clk LOC = B1 | CLOCK_DEDICATED_ROUTE;
+
+NET char<0> LOC = M5;
+NET char<1> LOC = M11;
+NET char<2> LOC = P7;
+NET char<3> LOC = P6;
+NET char<4> LOC = N5;
+NET char<5> LOC = N4;
+NET char<6> LOC = P4;
+NET char<7> LOC = G1;
+
+NET clk LOC = B8;
